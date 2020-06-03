@@ -1,0 +1,10 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+File "game/myscreens.rpy", line 20: u'show' is not a keyword argument or valid child for the screen statement.
+    show IKS:
+        ^
+
+Ren'Py Version: Ren'Py 7.4.0.84
+Wed Jun 03 21:03:04 2020
