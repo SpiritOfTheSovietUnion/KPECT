@@ -1,224 +1,72 @@
 ﻿# Вы можете расположить сценарий своей игры в этом файле.
+label main_menu:
+    return
 
-# Определение персонажей игры.
-define ii = Character('ИИ', color="#ffcccc", what_color="feee74")
+image x = Text("x", size=150)
+image o = Text("o", size=150)
 
-define turn = 0
+define return_values = [
+    ((0, 0), (0, 1), (0, 2)),
+    ((1, 0), (1, 1), (1, 2)),
+    ((2, 0), (2, 1), (2, 2)),
+]
 
-define player1win = 0
-define player2win = 0
+screen game():
+    layer "master"
+    frame:
+        background Solid("#000")
+        padding (25, 25)
+        align (0.5, 0.5)
+        vbox:
+            spacing 10
+            for s_row, r_row in zip(state, return_values):
+                hbox:
+                    spacing 10
+                    for state_value, r_value in zip(s_row, r_row):
+                        fixed:
+                            fit_first True
+                            imagebutton:
+                                xysize (150, 150)
+                                idle Solid("#0ff")
+                                hover Solid("#ff0")
+                                action Return(r_value)
+                            if state_value is True:
+                                add "x" align (0.5, 0.5)
+                            elif state_value is False:
+                                add "o" align (0.5, 0.5)
 
-define one = 0
-define two = 0
-define tree = 0
-define four = 0
-define five = 0
-define six = 0
-define seven = 0
-define eight = 0
-define nine = 0
-
-# Вместо использования оператора image можете просто
-# складывать все ваши файлы изображений в папку images.
-# Например, сцену bg room можно вызвать файлом "bg room.png",
-# а eileen happy — "eileen happy.webp", и тогда они появятся в игре.
-
-# Игра начинается здесь:
 label start:
-
-
-    ii "Вы попали в Симмуляцию."
-
-    ii "Располагайтесь удобнее, время первого теста!"
-
-    ii "Вы уже готовы?"
-
-label choose:
-
+    hide black
     menu:
+        "Выбери кем ходишь"
+        "По очереди":
+            $user_value = None
+        "xxxxxxxx":
+            $user_value = True
+        "oooooooo":
+            $user_value = False
 
-        "Да, готов.":
-            ii "Перемещаю.."
-            jump starting
-        "Ещё не готов.":
+    $turn = 0
+    # None -> empty, True -> x, False -> o
+    $state = [
+        [None] * 3,
+        [None] * 3,
+        [None] * 3,
+    ]
+    $renpy.watch("turn")
+    $renpy.watch("state")
 
-            ii "Жаль. Вы уверены?"
+    while turn < 9:
+        $turn += 1
+        call screen game
+        call process(*_return)
+    call check_win
+    return
 
-            ii "Обдумайте вопрос ещё раз"
+label process(column, row):
+    "[column], [row]"
+    $state[column][row] = user_value
+    return
 
-            jump choose
-
-
-label starting:
-
-    ii "Самое времяя запустить матч против другого игрока"
-
-    call screen KPECT
-
-label minigame:
-
-    if turn >= 5:
-        call WinCheck
-
-    else:
-        jump PROD
-
-label PROD:
-    call screen KPECT
-    jump PROM
-
-label PROM:
-#######################################
-    if one == 2:
-        show NULL:
-            xpos 120, ypos 135
-    elif one == 1:
-        show IKS:
-            xpos 120, ypos 135
-    else:
-        jump minigame
-########################################
-    if two == 2:
-        show NULL:
-            xpos 350, ypos 135
-    elif two == 1:
-        show IKS:
-            xpos 350, ypos 135
-    else:
-        jump minigame
-########################################
-    if three == 2:
-        show NULL:
-            xpos 570, ypos 135
-    elif three == 1:
-        show IKS:
-            xpos 570, ypos 135
-    else:
-        jump minigame
-#######################################
-    if four == 2:
-        show NULL:
-            xpos 120, ypos 385
-    elif four == 1:
-        show IKS:
-            xpos 120, ypos 385
-    else:
-        jump minigame
-########################################
-    if five == 2:
-        show NULL:
-            xpos 350, ypos 385
-    elif five == 1:
-        show IKS:
-            xpos 350, ypos 385
-    else:
-        jump minigame
-########################################
-    if six == 2:
-        show NULL:
-            xpos 570, ypos 385
-    elif six == 1:
-        show IKS:
-            xpos 570, ypos 385
-    else:
-        jump minigame
-########################################
-    if seven == 2:
-        show NULL:
-            xpos 120, ypos 570
-    elif seven == 1:
-        show IKS:
-            xpos 120, ypos 570
-    else:
-        jump minigame
-########################################
-    if eight == 2:
-        show NULL:
-            xpos 350, ypos 570
-    elif eight == 1:
-        show IKS:
-            xpos 350, ypos 570
-    else:
-        jump minigame
-########################################
-    if seven == 2:
-        show NULL:
-            xpos 570, ypos 570
-    elif seven == 1:
-        show IKS:
-            xpos 570, ypos 570
-    else:
-        jump minigame
-########################################
-
-label ONE:
-
-
-    $ turn += 1
-    jump minigame
-
-label TWO:
-
-
-    $ turn +=1
-    jump minigame
-
-label THREE:
-
-
-    $ turn += 1
-    jump minigame
-
-label FOUR:
-
-
-    $ turn += 1
-    jump minigame
-
-label FIVE:
-
-
-    $ turn += 1
-    jump minigame
-
-label SIX:
-
-
-    $ turn += 1
-    jump minigame
-
-label SEVEN:
-
-
-    $ turn += 1
-    jump minigame
-
-label EIGHT:
-
-
-    $ turn += 1
-    jump minigame
-
-label NINE:
-
-
-    $ turn += 1
-    jump minigame
-
-label WinCheck:
-
-    ii "..."
-    ii "..."
-    ii "..."
-
-label WIN:
-    if player2win == 2:
-        ii "Второй игрок победил"
-    elif player1win == 1:
-        ii "Игрок, начинавший партию, победил"
-    else:
-        ii "Похоже, вы сыграли в ничью"
-
-    jump END
-
-label END:
+label check_win():
+    return
