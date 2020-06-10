@@ -1,17 +1,21 @@
-﻿# Эту хуйню вставить вместо аналогичного в файлах проекта
+﻿# Файл основа
 label main_menu:
     return
 
+#используемые фигуры
 image x = Text("x", size=150)
 image o = Text("o", size=150)
 
-define chara = "Хуй"
+define chara = ".!."
 
+#значения для заполнения игроками
 define return_values = [
     ((0, 0), (0, 1), (0, 2)),
     ((1, 0), (1, 1), (1, 2)),
     ((2, 0), (2, 1), (2, 2)),
 ]
+
+#шаблоны победы
 define win_values = [
     ((0, 0), (1, 0), (2, 0)),
     ((0, 1), (1, 1), (2, 1)),
@@ -22,6 +26,8 @@ define win_values = [
     ((0, 0), (1, 1), (2, 2)),
     ((2, 0), (1, 1), (0, 2)),
 ]
+
+#отображаемые фигуры
 screen game():
     layer "master"
     frame:
@@ -45,7 +51,7 @@ screen game():
                                 add "x" align (0.5, 0.5)
                             elif state_value == "o":
                                 add "o" align (0.5, 0.5)
-
+#основа
 label start:
     hide black
     $chara = None
@@ -60,7 +66,8 @@ label start:
             $chara = "o"
 
     $turn = 0
-    # None -> empty, True -> x, False -> o
+    
+    #заполняются в соответствии со знаком
     $state = [
         [None] * 3,
         [None] * 3,
@@ -69,6 +76,8 @@ label start:
     $renpy.watch("turn")
     $renpy.watch("state")
 
+    #тело игры
+    #до 9 ходов, с 5-го идет проверка на победный ход
     while turn < 9:
         $user_value = chara
         $turn += 1
@@ -83,20 +92,25 @@ label start:
         call process(*_return)
     call check_win
     return
-
+    
+#вывод текущей колонки хода, чистая проверка
 label process(column, row):
     "[column], [row]"
     $state[column][row] = user_value
     return
-
+    
+#проверка на победный ход
 label check_win(state, chara):
     $inside = []
     $outside = []
     $i = 0
+    
+    #в теории, должен сравнивать знак(chara) по текущим ходам с уже готовыми шаблонами победы
+    #и в случае совпадения, выкидывать текущего пользователя на победный кат
     python:
-        for inside in win_values:
+        """for inside in win_values:
             for outside in inside:
-                """if state[inside[0], inside[1]] == chara:
+                if state[inside[0], inside[1]] == chara:
                     i += 1
                     continue
                 else:
@@ -107,7 +121,8 @@ label check_win(state, chara):
         renpy.jump("WIN")"""
 
     return
-
+    
+#Переход на победный кат
 label WIN:
     "Поздравляю, игрок за [chara] - ПАДЕБИЛ!!1!"
     return
